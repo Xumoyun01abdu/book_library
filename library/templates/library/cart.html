@@ -1,0 +1,84 @@
+{% extends 'library/base.html' %}
+
+{% block title %}Shopping Cart - Book Library{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Shopping Cart</h1>
+
+    {% if cart_items %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Book</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ item.book.title }}</strong><br>
+                                            <small class="text-muted">{{ item.book.author }}</small>
+                                        </td>
+                                        <td>{{ item.book.price }}</td>
+                                        <td>
+                                            <form method="post" action="{% url 'update_cart' item.id %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control" style="width: 60px;" onchange="this.form.submit()">
+                                            </form>
+                                        </td>
+                                        <td><strong>{{ item.get_total_price }}</strong></td>
+                                        <td>
+                                            <form method="post" action="{% url 'remove_from_cart' item.id %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Order Summary</h5>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>{{ total_price }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Total:</strong>
+                            <strong style="color: var(--primary-color); font-size: 1.3rem;">{{ total_price|floatformat:2 }}</strong>
+                        </div>
+                        <button class="btn btn-primary w-100 mb-2">Proceed to Checkout</button>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary w-100">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-cart-x"></i>
+            <h3>Your cart is empty</h3>
+            <p class="text-muted">Add some books to get started!</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Browse Books</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

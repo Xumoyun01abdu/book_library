@@ -1,0 +1,53 @@
+{% extends 'library/base.html' %}
+
+{% block title %}Favorites - Book Library{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">My Favorites</h1>
+
+    {% if favorites %}
+        <div class="row g-4">
+            {% for favorite in favorites %}
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="card book-card">
+                        {% if favorite.book.cover_image %}
+                            <img src="{{ favorite.book.cover_image.url }}" class="card-img-top book-cover" alt="{{ favorite.book.title }}">
+                        {% else %}
+                            <div class="book-cover d-flex align-items-center justify-content-center">
+                                <i class="bi bi-book" style="font-size: 3rem; color: var(--primary-color);"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title book-title">{{ favorite.book.title }}</h5>
+                            <p class="card-text book-author">{{ favorite.book.author }}</p>
+                            <p class="book-price">{{ favorite.book.price }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <form method="post" action="{% url 'add_to_cart' favorite.book.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary w-100 mb-2">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'remove_from_favorites' favorite.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-heart"></i>
+            <h3>No favorites yet</h3>
+            <p class="text-muted">Add books to your favorites to see them here!</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Browse Books</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'library/base.html' %}
+
+{% block title %}Home - Book Detail{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    {% if book %}
+        <div class="row g-4">
+	        <div class="col-6">
+                    <div class="card book-card">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image.url }}" style="height:350px" class="card-img-top book-cover" alt="{{ book.title }}">
+                        {% else %}
+                            <div class="book-cover d-flex align-items-center justify-content-center">
+                                <i class="bi bi-book" style="font-size: 3rem; color: var(--primary-color);"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title book-title">{{ book.title }}</h5>
+                            <p class="card-text book-author">{{ book.author }}</p>
+                            <div class="mb-2">
+                                <span class="rating">
+                                    {% for i in "12345" %}
+                                        {% if i|add:"0" <= book.rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <small class="text-muted">({{ book.rating }})</small>
+                            </div>
+                            <p class="book-price">{{ book.price }}</p>
+                            <p class="card-text text-muted small">{{ book.description }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'add_to_cart' book.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-primary w-100 mb-2">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'add_to_favorites' book.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                        <i class="bi bi-heart"></i> Add to Favorites
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'login' %}" class="btn btn-sm btn-primary w-100">Login to Buy</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-search"></i>
+            <h3>No books found</h3>
+            <p class="text-muted">Try adjusting your search or filter criteria</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

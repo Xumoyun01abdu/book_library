@@ -1,0 +1,99 @@
+{% extends 'library/base.html' %}
+
+{% block title %}Profile - Book Library{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">My Profile</h1>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-person-circle" style="font-size: 3rem; color: var(--primary-color);"></i>
+                            <h5 class="card-title mt-3">{{ user.get_full_name|default:user.username }}</h5>
+                            <p class="text-muted">{{ user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 style="color: var(--primary-color);">{{ cart_count }}</h3>
+                                    <p class="text-muted">Items in Cart</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 style="color: var(--primary-color);">{{ favorites_count }}</h3>
+                                    <p class="text-muted">Favorite Books</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                    <h5 class="mb-0">Edit Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" value="{{ user.first_name }}" disabled>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" value="{{ user.last_name }}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="{{ user.email }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ profile.phone }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea name="address" class="form-control" rows="3">{{ profile.address }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" name="city" class="form-control" value="{{ profile.city }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Country</label>
+                                <input type="text" name="country" class="form-control" value="{{ profile.country }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Bio</label>
+                            <textarea name="bio" class="form-control" rows="3">{{ profile.bio }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
